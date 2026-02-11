@@ -1,5 +1,6 @@
-# Your Project's Title...
-Your project's description...
+#Edge Delivery with DA
+
+Asking for a friend
 
 ## Environments
 - Preview: https://main--{repo}--{owner}.aem.page/
