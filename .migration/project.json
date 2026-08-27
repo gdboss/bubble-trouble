@@ -1,9 +1,14 @@
 {
+  "type": "da",
   "sites": {
     "bubble-trouble": {
       "previewOrg": "gdboss",
       "previewSite": "bubble-trouble",
-      "contentHostUrl": "https://content.da.live/gdboss/bubble-trouble/"
+      "contentHostUrl": "https://content.da.live/gdboss/bubble-trouble/",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
     }
-  }
+  },
+  "features": [
+    "site-planning"
+  ]
 }
