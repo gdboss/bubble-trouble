@@ -2,9 +2,9 @@
 
 Keep an EDS site on its design system, even when Claude Code writes the CSS.
 
-- **`tokens.json`** is the single source of truth (W3C DTCG format: colours, spacing, radius).
+- **`tokens.json`** is the single source of truth (W3C DTCG format: colors, spacing, radius).
 - **A generator** writes the tokens into `styles/styles.css` as CSS variables.
-- **Quality gates** fail the build when anyone (person or AI) hard-codes a colour, invents a variable, hand-edits generated CSS, silences the linter, or picks colours that fail WCAG contrast.
+- **Quality gates** fail the build when anyone (person or AI) hard-codes a color, invents a variable, hand-edits generated CSS, silences the linter, or picks colors that fail WCAG contrast.
 - **A Claude Code skill** (`.claude/skills/apply-design-tokens`) does the judgement work: mapping existing values to the right token and reporting what it couldn't map.
 
 The AI does the mapping. The scripts decide whether it's right.
@@ -27,9 +27,9 @@ Requires Node 22+. No runtime dependencies: nothing here ships to the browser, a
 | Stylelint `color-no-hex`, `color-named`, `function-disallowed-list` | `#dadada`, `red`, `rgb()`, `hsl()`, `oklch()` … in `blocks/` and `styles/` | `.stylelintrc.json` |
 | Generated region check | Hand edits to the token CSS, or `tokens.json` changed without a rebuild | `npm run tokens:check` |
 | Undefined variables | `var(--color-brand-accent)` when no such token exists (a common AI hallucination) | `test/design-tokens/repo.test.mjs` |
-| No colour-rule disables | `/* stylelint-disable color-no-hex */` outside the generated block | same |
+| No color-rule disables | `/* stylelint-disable color-no-hex */` outside the generated block | same |
 | WCAG contrast | Token pairs in `contrast-pairs.json` below their minimum ratio | same |
-| Token file validation | Bad names, broken or looping aliases, non-hex colours, unitless sizes | `tools/design-tokens/lib.mjs` (unit tested) |
+| Token file validation | Bad names, broken or looping aliases, non-hex colors, unitless sizes | `tools/design-tokens/lib.mjs` (unit tested) |
 
 ## Prove the gates work
 
@@ -42,9 +42,9 @@ sed -i 's|solid var(--color-border-subtle);|solid #dadada; /* stylelint-disable-
 sed -i 's|var(--color-border-subtle)|var(--color-border-strong)|' blocks/cards/cards.css
 # 3. Hand-edit generated CSS
 sed -i 's|--color-brand-500: #3b63fb;|--color-brand-500: #2f5bd3;|' styles/styles.css
-# 4. Unreadable text colour (then run npm run tokens:build)
+# 4. Unreadable text color (then run npm run tokens:build)
 sed -i 's|"#505050"|"#9aa0aa"|' design-tokens/tokens.json
-# 5. Colour in another format
+# 5. color in another format
 sed -i 's|var(--color-border-subtle)|hsl(0deg 0% 85%)|' blocks/cards/cards.css
 ```
 
@@ -64,6 +64,6 @@ sed -i 's|var(--color-border-subtle)|hsl(0deg 0% 85%)|' blocks/cards/cards.css
 
 ## Known limits
 
-- Colours are enforced; spacing and radius tokens are generated but not yet enforced (block CSS legitimately uses px for borders, breakpoints, etc.). Tighten one category at a time.
+- colors are enforced; spacing and radius tokens are generated but not yet enforced (block CSS legitimately uses px for borders, breakpoints, etc.). Tighten one category at a time.
 - Contrast is checked for token pairs, not for text over images (e.g. the hero block). Check those by eye.
 - Changing token values changes how the site looks. The gates prove consistency, not that it looks right. Always review the preview link.
