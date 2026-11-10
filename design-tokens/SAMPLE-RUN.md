@@ -1,9 +1,9 @@
 # Sample run: `/apply-design-tokens` on a live EDS site
 
 Site: an Edge Delivery Services site built from `aem-boilerplate`, with a custom dark neon "terminal" hero variant.
-Goal: move every colour onto design tokens **without changing how the site looks**, so token values were set to the site's existing colours.
+Goal: move every color onto design tokens **without changing how the site looks**, so token values were set to the site's existing colors.
 
-Baseline `npm run verify`: **FAIL**, with 13 Stylelint colour errors (7 in global styles and the cards block, 6 in the terminal hero).
+Baseline `npm run verify`: **FAIL**, with 13 Stylelint color errors (7 in global styles and the cards block, 6 in the terminal hero).
 
 ## Design token report
 Violations: 13 -> 0      npm run verify: PASS (46/46 tests, ~4 s)
@@ -26,11 +26,11 @@ Violations: 13 -> 0      npm run verify: PASS (46/46 tests, ~4 s)
 
 ### Visual changes for review
 None. Checked in Chromium by rendering a test page (body, links, buttons, cards, footer, terminal hero) with the old and the new CSS:
-- 32 elements: every computed colour identical, including hover states.
+- 32 elements: every computed color identical, including hover states.
 - Full-page screenshots: byte-for-byte identical.
 
 ### Needs a design decision
-First pass: the six terminal hero colours had no matching tokens, so the skill left them alone and reported them. Design approved adding them as `color.ink.*` / `color.neon.*` primitives with `color.terminal.*` semantic tokens, and the second pass applied them.
+First pass: the six terminal hero colors had no matching tokens, so the skill left them alone and reported them. Design approved adding them as `color.ink.*` / `color.neon.*` primitives with `color.terminal.*` semantic tokens, and the second pass applied them.
 
 ### Contrast pairs added
 Terminal text, muted text and cyan accent on the terminal background, all above 4.5:1. Not testable automatically: the callout's text on its 6% magenta tint (a blend). Checked by eye.
@@ -41,7 +41,7 @@ Each change below was applied on its own to the passing branch. `npm run verify`
 
 | Attempt | Caught by |
 |---|---|
-| `#dadada` + `stylelint-disable-line color-no-hex` in cards.css (Stylelint alone passes!) | Repo test: no colour-rule disables |
+| `#dadada` + `stylelint-disable-line color-no-hex` in cards.css (Stylelint alone passes!) | Repo test: no color-rule disables |
 | `var(--color-border-strong)` (doesn't exist) | Repo test: undefined variables |
 | Hand-edited `--color-brand-500` in the generated block | `tokens:check` |
 | `neutral.600` changed to #9aa0aa | Contrast test: 2.63 < 4.5 |
