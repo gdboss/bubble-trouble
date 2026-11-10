@@ -20,17 +20,19 @@ The AI proposes; the scripts decide. The same gates run in GitHub Actions on eve
 ## Goals + Results
 Goal: let developers use Claude Code on EDS blocks without design-system drift reaching production.
 
-Results on the public AEM boilerplate:
-- 7 hard-coded colours (global styles + cards block) replaced with tokens in one run. `npm run verify` went from failing to passing.
-- 46 automated tests; the full gate runs in about 4 seconds locally.
-- 5 deliberate "cheats" (lint-disable comment, invented token, hand-edited generated CSS, low-contrast token, colour in `hsl()`) all caught by the gates.
-- Zero runtime dependencies. The only thing that ships is about 25 extra lines of CSS variables in `styles.css`.
+Results on my own EDS site (boilerplate-based, with a custom dark neon hero variant):
+- 13 hard-coded colours (global styles, cards block, hero variant) moved onto 32 design tokens. `npm run verify` went from failing to passing.
+- **Zero visual change**, proven in a browser: every computed colour on 32 test elements (hover states included) was identical, and the before/after full-page screenshots were byte-for-byte the same.
+- 46 automated tests; the full gate runs in about 4 seconds.
+- 5 deliberate "cheats" (lint-disable comment, invented token, hand-edited generated CSS, low-contrast token, colour in `hsl()`) all caught.
+- Zero runtime dependencies. Only CSS variables ship to the browser.
 
 ## Lessons learned
 - **Don't let the AI grade its own work.** In my test, a `stylelint-disable-line` comment made the linter pass. Only a separate test that scans for colour-rule disables caught it. Guard the guardrails.
 - **Hallucinated tokens are the most common AI failure.** `var(--color-brand-accent)` looks right and fails silently in the browser. A cross-file "is this variable defined anywhere?" check is cheap and catches it.
 - **Map by role, not by nearest hex.** `#dadada` is a border, so it gets `--color-border-subtle`, even if a text grey is closer in value. Spell this out in the skill or the AI picks by colour distance.
-- **Give the AI a way to stop.** "If no token fits, leave it and report it" produces better results than letting it invent tokens or edit `tokens.json`.
+- **Give the AI a way to stop.** "If no token fits, leave it and report it" produces better results than letting it invent tokens or edit `tokens.json`. On my site this is exactly what happened with a custom neon hero variant. The skill flagged six colours as "needs a design decision", I approved new tokens, and a second pass finished the job.
+- **Start with your current colours as token values.** The first pass then changes nothing visually, so reviewers only have to confirm that nothing moved. Rebrand later by editing one JSON file.
 - **Keep legacy variable names** (`--link-color` etc.) and point them at tokens. Every existing block keeps working, and the diff stays small and reviewable.
 - **Tighten one category at a time.** Start with colours. Spacing tokens are generated but not enforced yet, because block CSS uses px legitimately for borders and breakpoints.
 - Passing gates prove consistency, not good looks. Changing token values changes the site, so always review the `aem.page` preview link.
@@ -55,7 +57,7 @@ https://github.com/gdboss/bubble-trouble/tree/design-tokens/design-tokens
 - An Edge Delivery Services site in GitHub (based on aem-boilerplate), with Document Authoring or any other content source
 - Claude Code (Claude Pro, Max, Team or Enterprise, or an API key)
 - Node.js 22 or later
-- Your design system's colour values (a sample neutral token file is included)
+- Your design system's colour values (the sample token file uses the boilerplate's default colours plus a neon accent set)
 
 ## Tags
 - Use case: Design system / Development (pick the closest option in the dropdown)

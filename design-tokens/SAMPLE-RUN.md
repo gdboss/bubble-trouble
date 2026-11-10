@@ -1,29 +1,39 @@
-# Sample run: `/apply-design-tokens` on the AEM boilerplate
+# Sample run: `/apply-design-tokens` on a live EDS site
 
-Starting point: `adobe/aem-boilerplate` (commit `3acb6d9`), plus the tooling from this recipe.
-Baseline `npm run verify`: **FAIL**, with 7 Stylelint colour errors.
+Site: an Edge Delivery Services site built from `aem-boilerplate`, with a custom dark neon "terminal" hero variant.
+Goal: move every colour onto design tokens **without changing how the site looks**, so token values were set to the site's existing colours.
+
+Baseline `npm run verify`: **FAIL**, with 13 Stylelint colour errors (7 in global styles and the cards block, 6 in the terminal hero).
 
 ## Design token report
-Violations: 7 -> 0      npm run verify: PASS (46/46 tests, ~4 s)
+Violations: 13 -> 0      npm run verify: PASS (46/46 tests, ~4 s)
 
-| File:line | Before | After | Old value -> New value | Why this token |
-|---|---|---|---|---|
-| styles/styles.css:44 | `--background-color: white` | `var(--color-surface-default)` | #fff -> #fff | Page background |
-| styles/styles.css:45 | `--light-color: #f8f8f8` | `var(--color-surface-subtle)` | #f8f8f8 -> #f5f6f8 | Used as section, footer and secondary button background |
-| styles/styles.css:46 | `--dark-color: #505050` | `var(--color-text-muted)` | #505050 -> #565d6b | Used as text colour on light surfaces (secondary buttons) |
-| styles/styles.css:47 | `--text-color: #131313` | `var(--color-text-default)` | #131313 -> #14171c | Body text |
-| styles/styles.css:48 | `--link-color: #3b63fb` | `var(--color-text-link)` | #3b63fb -> #2f5bd3 | Links and primary button |
-| styles/styles.css:49 | `--link-hover-color: #1d3ecf` | `var(--color-text-link-hover)` | #1d3ecf -> #1f3f9e | Link and primary button hover |
-| blocks/cards/cards.css:11 | `border: 1px solid #dadada` | `var(--color-border-subtle)` | #dadada -> #d9dce1 | Decorative card border |
+| File | Before | After | Why this token |
+|---|---|---|---|
+| styles/styles.css | `--background-color: white` | `var(--color-surface-default)` | Page background |
+| styles/styles.css | `--light-color: #f8f8f8` | `var(--color-surface-subtle)` | Section, footer, secondary button background |
+| styles/styles.css | `--dark-color: #505050` | `var(--color-text-muted)` | Text on light surfaces (secondary buttons) |
+| styles/styles.css | `--text-color: #131313` | `var(--color-text-default)` | Body text |
+| styles/styles.css | `--link-color: #3b63fb` | `var(--color-text-link)` | Links, primary button |
+| styles/styles.css | `--link-hover-color: #1d3ecf` | `var(--color-text-link-hover)` | Link and primary button hover |
+| blocks/cards/cards.css | `border: 1px solid #dadada` | `var(--color-border-subtle)` | Decorative card border |
+| blocks/hero/hero.css | `--hero-terminal-bg: #0a0a0f` | `var(--color-terminal-surface)` | Terminal hero background |
+| blocks/hero/hero.css | `--hero-terminal-text: #fff` | `var(--color-terminal-text)` | Terminal heading and strong text |
+| blocks/hero/hero.css | `--hero-terminal-muted: #9aa0b0` | `var(--color-terminal-text-muted)` | Terminal body copy |
+| blocks/hero/hero.css | `--hero-terminal-cyan: #00e5ff` | `var(--color-terminal-accent)` | Eyebrow pill, links |
+| blocks/hero/hero.css | `--hero-terminal-magenta: #ff1f8e` | `var(--color-terminal-highlight)` | Callout border |
+| blocks/hero/hero.css | `background: rgb(255 31 142 / 6%)` | `color-mix(in srgb, var(--hero-terminal-magenta) 6%, transparent)` | Callout tint, now derived from the token |
 
 ### Visual changes for review
-All except `--background-color` change slightly. The biggest is the link/primary button blue (#3b63fb -> #2f5bd3, darker). Check buttons, links, cards and the footer on the preview link.
+None. Checked in Chromium by rendering a test page (body, links, buttons, cards, footer, terminal hero) with the old and the new CSS:
+- 32 elements: every computed colour identical, including hover states.
+- Full-page screenshots: byte-for-byte identical.
 
 ### Needs a design decision
-None.
+First pass: the six terminal hero colours had no matching tokens, so the skill left them alone and reported them. Design approved adding them as `color.ink.*` / `color.neon.*` primitives with `color.terminal.*` semantic tokens, and the second pass applied them.
 
-### Contrast pairs to add
-None. Every remapped legacy pair is in `contrast-pairs.json`. Not testable: hero text (`--background-color`) over the hero image. Check by eye.
+### Contrast pairs added
+Terminal text, muted text and cyan accent on the terminal background, all above 4.5:1. Not testable automatically: the callout's text on its 6% magenta tint (a blend). Checked by eye.
 
 ## Gate check: deliberate breakage
 
@@ -31,8 +41,8 @@ Each change below was applied on its own to the passing branch. `npm run verify`
 
 | Attempt | Caught by |
 |---|---|
-| `#dadada` + `stylelint-disable-line color-no-hex` in cards.css | Repo test: no colour-rule disables |
+| `#dadada` + `stylelint-disable-line color-no-hex` in cards.css (Stylelint alone passes!) | Repo test: no colour-rule disables |
 | `var(--color-border-strong)` (doesn't exist) | Repo test: undefined variables |
 | Hand-edited `--color-brand-500` in the generated block | `tokens:check` |
-| `text.muted` changed to #9aa0aa | Contrast test: 2.63 < 4.5 |
+| `neutral.600` changed to #9aa0aa | Contrast test: 2.63 < 4.5 |
 | `hsl(0deg 0% 85%)` in cards.css | Stylelint `function-disallowed-list` |
