@@ -49,7 +49,7 @@ Results on the public AEM boilerplate:
 9. Optional: try the 5 "prove the gates work" commands in the README to see each cheat get caught.
 
 ## Sample asset or link
-https://github.com/<your-account>/eds-design-token-guardrails  ← replace once published
+https://github.com/gdboss/bubble-trouble/tree/design-tokens/design-tokens
 
 ## Setup requirements
 - An Edge Delivery Services site in GitHub (based on aem-boilerplate), with Document Authoring or any other content source
