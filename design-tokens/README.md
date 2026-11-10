@@ -41,9 +41,9 @@ sed -i 's|solid var(--color-border-subtle);|solid #dadada; /* stylelint-disable-
 # 2. Invent a token
 sed -i 's|var(--color-border-subtle)|var(--color-border-strong)|' blocks/cards/cards.css
 # 3. Hand-edit generated CSS
-sed -i 's|--color-brand-500: #2f5bd3;|--color-brand-500: #3b63fb;|' styles/styles.css
+sed -i 's|--color-brand-500: #3b63fb;|--color-brand-500: #2f5bd3;|' styles/styles.css
 # 4. Unreadable text colour (then run npm run tokens:build)
-sed -i 's|"#565d6b"|"#9aa0aa"|' design-tokens/tokens.json
+sed -i 's|"#505050"|"#9aa0aa"|' design-tokens/tokens.json
 # 5. Colour in another format
 sed -i 's|var(--color-border-subtle)|hsl(0deg 0% 85%)|' blocks/cards/cards.css
 ```
