@@ -9,6 +9,22 @@ Keep an EDS site on its design system, even when Claude Code writes the CSS.
 
 The AI does the mapping. The scripts decide whether it's right.
 
+## The workflow
+
+```mermaid
+flowchart TD
+    A["Design system colors<br/>design-tokens/tokens.json"] --> B["Run /apply-design-tokens<br/>in Claude Code"]
+    B --> C["Claude maps hard-coded colors<br/>to tokens by role"]
+    C --> D{"npm run verify<br/>lint, token check, tests"}
+    D -- "Fail, up to 3 tries" --> C
+    D -- "Still failing or no token fits" --> E["Report: needs a design decision"]
+    E --> F["Designer approves new tokens<br/>in tokens.json"]
+    F --> B
+    D -- Pass --> G["Developer reviews the report<br/>and the aem.page preview"]
+    G --> H["Pull request<br/>CI runs npm run verify again"]
+    H --> I["Merge to main"]
+```
+
 ## Commands
 
 | Command | What it does |
